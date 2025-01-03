@@ -1,5 +1,5 @@
+import orjson
 import tdk.gts
-import json
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
@@ -70,12 +70,12 @@ Return a JSON with:
             model=self.MODEL,
             messages=[
                 {"role": "system", "content": self.SYSTEM_PROMPT},
-                {"role": "user", "content": json.dumps(context, ensure_ascii=False)}
+                {"role": "user", "content": orjson.dumps(context).decode('utf-8')}
             ],
             response_format={"type": "json_object"}
         )
         
-        return json.loads(response.choices[0].message.content)
+        return orjson.loads(response.choices[0].message.content)
 
     def analyze(self, sentence, word):
         try:
@@ -110,4 +110,4 @@ if __name__ == "__main__":
     word = "artık"
     
     result = analyzer.analyze(sentence, word)
-    print(json.dumps(result, indent=4, ensure_ascii=False))
+    print(orjson.dumps(result, option=orjson.OPT_INDENT_2).decode('utf-8'))
