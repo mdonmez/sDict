@@ -3,6 +3,7 @@ import tdk.gts
 from openai import OpenAI
 from dotenv import load_dotenv
 import os
+from app import app
 
 # Load environment variables
 load_dotenv()
@@ -79,13 +80,9 @@ Return a JSON with:
 
     def analyze(self, sentence, word):
         try:
-            # Step 1: Get TDK data
             tdk_data = self.get_tdk_data(word)
-            
-            # Step 2: Get AI analysis
             ai_response = self.get_ai_analysis(sentence, word, tdk_data)
             
-            # Step 3: Merge responses
             final_response = {
                 **ai_response,
                 "dictionary": {
@@ -101,13 +98,5 @@ Return a JSON with:
         except Exception as e:
             return {"error": str(e)}
 
-# Usage example
 if __name__ == "__main__":
-    analyzer = TurkishLanguageAnalyzer()
-    
-    # Example usage
-    sentence = "Artık seni sevmiyorum"
-    word = "artık"
-    
-    result = analyzer.analyze(sentence, word)
-    print(orjson.dumps(result, option=orjson.OPT_INDENT_2).decode('utf-8'))
+    app.run(debug=True)
